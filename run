@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+
+use strict;
+use autodie;
+
+my @files = glob 'instances/*';
+
+for my $file (@files) {
+    $file =~ /instance_(\d+)_100\.dat$/ or die "Weird instances file: $file\n";
+    my $num = $1;
+    open my $f, '<', $file;
+    my $n = 0; my $sum = 0;
+    for (<$f>) {
+        my @tasks = split /\s+/, $_;
+        $n += 1;
+        $sum += `./lpt 3 @tasks`;
+    }
+    my $avg = $sum / $n;
+    print "$num, $avg\n";
+}
+
