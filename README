@@ -2,5 +2,5 @@
 LPT schedule generator for a class project
 
 Compile with:
-    g++ -Wall lpt.cpp main.cpp -o lpt
+    g++ -Wall -O3 lpt.cpp main.cpp -o lpt
 
