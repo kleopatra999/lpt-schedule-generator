@@ -55,7 +55,7 @@ int run (uint n_machines, const std::vector<std::vector<uint> >& taskses, bool o
             const Schedule& s = lpt(n_machines, taskses[i]);
             if (verbose) {
                 cout << "===";
-                for (uint j = 0; j < taskses[j].size(); j++) {
+                for (uint j = 0; j < taskses[i].size(); j++) {
                     cout << taskses[i][j];
                     if (j != taskses[i].size() - 1) cout << " ";
                 }
