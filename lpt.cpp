@@ -1,7 +1,9 @@
 
 #include <inttypes.h>
+#include <iostream>
 #include "lpt.h"
 #include "prique.h"
+using namespace std;
 
  // This represents an available slot for a task.
 struct Slot {
@@ -44,12 +46,14 @@ Schedule lpt (uint n_machines, const std::vector<uint>& task_list) {
     return r;
 }
 
-uint optimal_part (uint n_machines, const std::vector<uint>& task_list, std::vector<uint>& mtimes, const uint task_i) {
+uint optimal_part (bool& done, uint lower, uint n_machines, const std::vector<uint>& task_list, std::vector<uint>& mtimes, const uint task_i) {
     if (task_i == task_list.size()) {
         uint max = 0;
         for (uint m = 0; m < n_machines; m++) {
             if (mtimes[m] > max) max = mtimes[m];
         }
+        if (max == lower)
+            done = true;
         return max;
     }
     else {
@@ -57,7 +61,8 @@ uint optimal_part (uint n_machines, const std::vector<uint>& task_list, std::vec
         for (uint m = 0; m < n_machines; m++) {
             uint omt = mtimes[m];
             mtimes[m] += task_list[task_i];
-            uint thisres = optimal_part(n_machines, task_list, mtimes, task_i + 1);
+            uint thisres = optimal_part(done, lower, n_machines, task_list, mtimes, task_i + 1);
+            if (done) return thisres;
             mtimes[m] = omt;
             if (thisres < min) min = thisres;
         }
@@ -67,6 +72,11 @@ uint optimal_part (uint n_machines, const std::vector<uint>& task_list, std::vec
 
 uint optimal_time (uint n_machines, const std::vector<uint>& task_list) {
     std::vector<uint> mtimes (n_machines, 0);
-    return optimal_part(n_machines, task_list, mtimes, 0);
+    bool done = false;
+    uint max = 0;
+    for (uint i = 0; i < task_list.size(); i++) {
+        max += task_list[i];
+    }
+    return optimal_part(done, (max / n_machines + (max % n_machines != 0)), n_machines, task_list, mtimes, 0);
 }
 
